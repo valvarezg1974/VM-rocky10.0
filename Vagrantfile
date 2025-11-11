@@ -5,8 +5,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "Rocky10.0" # The box you want to use
   config.ssh.insert_key=false
 #  config.ssh.forward_agent = true
-  config.ssh.username="vagrant"
-  config.ssh.password="vagrant"
+  #config.ssh.username="vagrant"
+  #config.ssh.password="vagrant"
   config.vm.synced_folder ".", "/vagrant", disabled: false
 N = 1
   (1..N).each do |machine_id|
