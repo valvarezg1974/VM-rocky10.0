@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "valvarezg/Rocky10.0" # The box you want to use
   config.ssh.insert_key=false
 #  config.ssh.forward_agent = true
+  config.vm.boot_timeout=1200
   config.ssh.username="vagrant"
   config.ssh.password="vagrant"
   config.vm.synced_folder ".", "/vagrant", disabled: false
@@ -23,21 +24,38 @@ N = 1
         #end
 		machine.vm.provision "shell", inline: "echo 'Provisioning VM ...'"
 		
+
+    config.vm.provision "file", source: "/home/victor/.ssh/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"
+    public_key = File.read("/home/victor/.ssh/id_rsa.pub")
+    config.vm.provision :shell, :inline =>"
+     echo 'Copying ansible-vm public SSH Keys to the VM'
+     mkdir -p /home/vagrant/.ssh
+     chmod 700 /home/vagrant/.ssh
+     echo '#{public_key}' >> /home/vagrant/.ssh/authorized_keys     
+     chmod -R 600 /home/vagrant/.ssh/authorized_keys
+     echo 'Host 192.168.*.*' >> /home/vagrant/.ssh/config
+     echo 'StrictHostKeyChecking no' >> /home/vagrant/.ssh/config
+     echo 'UserKnownHostsFile /dev/null' >> /home/vagrant/.ssh/config
+     chmod -R 600 /home/vagrant/.ssh/config
+     ", privileged: false
+
+
 		#machine.vm.provision "shell", path: "scripts/base.sh"
     #machine.vm.provision "shell", path: "scripts/vagrant.sh"
-		#machine.vm.provision "shell", path: "scripts/cleanup.sh"
+		machine.vm.provision "shell", path: "scripts/cleanup.sh"
 	    #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
 		#  sudo yum -y update && sudo yum -y install kernel-headers kernel-devel gcc dkms 
 		#  SHELL
-		#machine.vm.provision :ansible do |ansible|
+		machine.vm.provision :ansible do |ansible|
         # Disable default limit to connect to all the machines
         #  ansible.limit = "all"
 		#  ansible.install = true
 		#  ansible.verbose = true
 		#  ansible.inventory_path = "inventory"
-        #  ansible.playbook       = "scripts/enable_firewalld.yml"
-		#  ansible.playbook       = "scripts/getenforce_selinux.yml"
-      #end
+      ansible.playbook       = "scripts/enable_firewalld.yml"
+		  ansible.playbook       = "scripts/getenforce_selinux.yml"
+      ansible.playbook       = "scripts/disable_root_password.yml"
+    end
 	  
 	  machine.vm.provision "shell", inline: "echo 'Fin Provisioning VM ...'"
 	  
