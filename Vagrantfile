@@ -25,7 +25,7 @@ N = 1
 		machine.vm.provision "shell", inline: "echo 'Provisioning VM ...'"
 		
 
-    config.vm.provision "file", source: "/home/victor/.ssh/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"
+    config.vm.provision "file", source: "/home/victor/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
     public_key = File.read("/home/victor/.ssh/id_rsa.pub")
     config.vm.provision :shell, :inline =>"
      echo 'Copying ansible-vm public SSH Keys to the VM'
@@ -52,9 +52,9 @@ N = 1
 		#  ansible.install = true
 		#  ansible.verbose = true
 		#  ansible.inventory_path = "inventory"
-      ansible.playbook       = "scripts/enable_firewalld.yml"
-		  ansible.playbook       = "scripts/getenforce_selinux.yml"
-      ansible.playbook       = "scripts/disable_root_password.yml"
+      ansible.playbook       = "scripts/site.yml"
+		  #ansible.playbook       = "scripts/getenforce_selinux.yml"
+      #ansible.playbook       = "scripts/disable_root_password.yml"
     end
 	  
 	  machine.vm.provision "shell", inline: "echo 'Fin Provisioning VM ...'"
