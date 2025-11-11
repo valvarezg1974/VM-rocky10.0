@@ -16,16 +16,10 @@ N = 1
       machine.vm.network "private_network", ip: "192.168.56.#{200+machine_id}"
     #  machine.vm.network "public_network", bridge: "Realtek 8852CE WiFi 6E PCI-E NIC"
 
-    # Only execute once the Ansible provisioner,
-    # when all the machines are up and ready.
-      #if machine_id == N
-        #machine.vm.provision :ansible_local do |ansible|
-		
-        #end
 		machine.vm.provision "shell", inline: "echo 'Provisioning VM ...'"
 		
 
-    config.vm.provision "file", source: "/home/victor/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
+    #config.vm.provision "file", source: "/home/victor/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
     public_key = File.read("/home/victor/.ssh/id_rsa.pub")
     config.vm.provision :shell, :inline =>"
      echo 'Copying ansible-vm public SSH Keys to the VM'
@@ -34,7 +28,7 @@ N = 1
      echo '#{public_key}' >> /home/vagrant/.ssh/authorized_keys     
      chmod -R 600 /home/vagrant/.ssh/authorized_keys
      echo 'Host 192.168.*.*' >> /home/vagrant/.ssh/config
-     echo 'StrictHostKeyChecking no' >> /home/vagrant/.ssh/config
+     echo 'StrictHostKeyChecking yes' >> /home/vagrant/.ssh/config
      echo 'UserKnownHostsFile /dev/null' >> /home/vagrant/.ssh/config
      chmod -R 600 /home/vagrant/.ssh/config
      ", privileged: false
@@ -53,8 +47,6 @@ N = 1
 		#  ansible.verbose = true
 		#  ansible.inventory_path = "inventory"
       ansible.playbook       = "scripts/site.yml"
-		  #ansible.playbook       = "scripts/getenforce_selinux.yml"
-      #ansible.playbook       = "scripts/disable_root_password.yml"
     end
 	  
 	  machine.vm.provision "shell", inline: "echo 'Fin Provisioning VM ...'"
