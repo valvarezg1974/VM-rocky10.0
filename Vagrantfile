@@ -2,7 +2,7 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "Rocky10.0" # The box you want to use
+  config.vm.box = "valvarezg/Rocky10.0" # The box you want to use
   config.ssh.insert_key=false
 #  config.ssh.forward_agent = true
   #config.ssh.username="vagrant"
