@@ -12,9 +12,3 @@ sudo dnf groupinstall -y "Development Tools"
 sudo dnf install -y epel-release
 sudo dnf install -y kernel-headers kernel-devel dkms gcc make perl elfutils-libelf-devel
 
-
-#systemctl start httpd
-#systemctl enable httpd
-#systemctl disable firewalld
-#echo "Servidor Web creado con PACKER" > /var/www/html/index.html
-#sudo usermod -G vboxsf vagrant

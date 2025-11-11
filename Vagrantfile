@@ -34,7 +34,7 @@ N = 1
      ", privileged: false
 
 
-		#machine.vm.provision "shell", path: "scripts/base.sh"
+		machine.vm.provision "shell", path: "scripts/base.sh"
     #machine.vm.provision "shell", path: "scripts/vagrant.sh"
 		machine.vm.provision "shell", path: "scripts/cleanup.sh"
 	    #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
