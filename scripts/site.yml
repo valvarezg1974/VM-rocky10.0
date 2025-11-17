@@ -1,3 +1,4 @@
-- import_playbook: enable_firewalld.yml
-- import_playbook: getenforce_selinux.yml
+#- import_playbook: enable_firewalld.yml
+#- import_playbook: getenforce_selinux.yml
 - import_playbook: disable_root_password.yml
+- import_playbook: get_ip.yml

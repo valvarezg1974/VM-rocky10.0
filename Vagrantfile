@@ -6,21 +6,26 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key=false
 #  config.ssh.forward_agent = true
   config.vm.boot_timeout=1200
-  config.ssh.username="vagrant"
-  config.ssh.password="vagrant"
   config.vm.synced_folder "/mnt/c", "/vagrant", disabled: true
   #config.vm.synced_folder ".","/vagrant", disabled: false
-  N = 1
+  config.ssh.username = "vagrant"          # Default user
+  config.ssh.password="vagrant"
+
+  N = 2
   (1..N).each do |machine_id|
     config.vm.define "machine#{machine_id}" do |machine|
       machine.vm.hostname = "machine#{machine_id}"
       machine.vm.network "private_network", ip: "192.168.56.#{200+machine_id}"
     #  machine.vm.network "public_network", bridge: "Realtek 8852CE WiFi 6E PCI-E NIC"
+      
+      machine.vm.provider "virtualbox" do |vb|
+			  vb.name = "RockyLinux10-#{machine_id}"
+			  vb.memory = "2048"
+			  vb.cpus = 1
+      end
 
-		machine.vm.provision "shell", inline: "echo 'Provisioning VM ...'"
-		
+		machine.vm.provision "shell", inline: "echo 'Provisioning VM ...'"		
 
-    #config.vm.provision "file", source: "/home/victor/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"
     public_key = File.read("/home/victor/.ssh/id_rsa.pub")
     config.vm.provision :shell, :inline =>"
      echo 'Copying ansible-vm public SSH Keys to the VM'
@@ -35,12 +40,12 @@ Vagrant.configure("2") do |config|
      ", privileged: false
 
 
-		machine.vm.provision "shell", path: "scripts/base.sh"
+		#machine.vm.provision "shell", path: "scripts/base.sh"
     #machine.vm.provision "shell", path: "scripts/vagrant.sh"
 		machine.vm.provision "shell", path: "scripts/cleanup.sh"
-	    #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
+	  #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
 		#  sudo yum -y update && sudo yum -y install kernel-headers kernel-devel gcc dkms 
-		#  SHELL
+		#SHELL
 		machine.vm.provision :ansible do |ansible|
         # Disable default limit to connect to all the machines
         #  ansible.limit = "all"

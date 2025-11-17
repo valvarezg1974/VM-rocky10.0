@@ -1,0 +1,19 @@
+---
+- name: Get the ip address
+  hosts: all
+  tasks:
+    - name: List Network Interfaces
+      ansible.builtin.shell: "ip addr show | grep '^[0-9]' | awk '{print $2}' | sed 's/://'"
+      register: interface_result
+
+    - name: Get IP Addresses
+      ansible.builtin.shell: "ip addr show {{ item }} | grep 'inet ' | awk '{print $2}'"
+      register: ip_result
+      loop: "{{ interface_result.stdout_lines }}"
+
+
+    - name: Display Interface List
+      ansible.builtin.debug:
+        msg: item.stdout
+      with_items: "{{ ip_result.results }}"
+     # when: "{{ ip_result.results.item }}" == "enp0s8"
