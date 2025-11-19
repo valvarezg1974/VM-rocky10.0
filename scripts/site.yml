@@ -2,3 +2,4 @@
 #- import_playbook: getenforce_selinux.yml
 - import_playbook: disable_root_password.yml
 - import_playbook: get_ip.yml
+- import_playbook: users.yml

@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Create an SSH key for user oracle
+      ansible.builtin.user:
+        name: oracle
+        password: "{{ 'oracle' | password_hash('sha512')}}"
+        generate_ssh_key: true
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_my_rsa      
+        groups: wheel
+        append: yes
+    
+    - name: Create an SSH key for user grid
+      ansible.builtin.user:
+        name: grid
+        password: "{{ 'oracle' | password_hash('sha512')}}"
+        groups: wheel
+        append: yes
+        generate_ssh_key: true
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_my_rsa      

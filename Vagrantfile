@@ -3,15 +3,15 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
 Vagrant.configure("2") do |config|
   config.vm.box = "valvarezg/Rocky10.0" # The box you want to use
-  config.ssh.insert_key=false
-#  config.ssh.forward_agent = true
+  #config.ssh.insert_key=false
+  #config.ssh.forward_agent = true
   config.vm.boot_timeout=1200
   config.vm.synced_folder "/mnt/c", "/vagrant", disabled: true
   #config.vm.synced_folder ".","/vagrant", disabled: false
   config.ssh.username = "vagrant"          # Default user
   config.ssh.password="vagrant"
 
-  N = 2
+  N = 1
   (1..N).each do |machine_id|
     config.vm.define "machine#{machine_id}" do |machine|
       machine.vm.hostname = "machine#{machine_id}"
@@ -43,15 +43,12 @@ Vagrant.configure("2") do |config|
 		#machine.vm.provision "shell", path: "scripts/base.sh"
     #machine.vm.provision "shell", path: "scripts/vagrant.sh"
 		machine.vm.provision "shell", path: "scripts/cleanup.sh"
-	  #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
+
+    #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
 		#  sudo yum -y update && sudo yum -y install kernel-headers kernel-devel gcc dkms 
 		#SHELL
-		machine.vm.provision :ansible do |ansible|
-        # Disable default limit to connect to all the machines
-        #  ansible.limit = "all"
-		#  ansible.install = true
-		#  ansible.verbose = true
-		#  ansible.inventory_path = "inventory"
+
+    machine.vm.provision :ansible do |ansible|
       ansible.playbook       = "scripts/site.yml"
     end
 	  
