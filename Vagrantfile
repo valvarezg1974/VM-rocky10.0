@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "machine#{machine_id}" do |machine|
       machine.vm.hostname = "machine#{machine_id}"
       machine.vm.network "private_network", ip: "192.168.56.#{200+machine_id}"
+      
     #  machine.vm.network "public_network", bridge: "Realtek 8852CE WiFi 6E PCI-E NIC"
       
       machine.vm.provider "virtualbox" do |vb|
@@ -42,15 +43,15 @@ Vagrant.configure("2") do |config|
 
 		#machine.vm.provision "shell", path: "scripts/base.sh"
     #machine.vm.provision "shell", path: "scripts/vagrant.sh"
-		machine.vm.provision "shell", path: "scripts/cleanup.sh"
+		#machine.vm.provision "shell", path: "scripts/cleanup.sh"
 
     #machine.vm.provision "shell", name: "update-packages", run: "always", inline: <<-SHELL
 		#  sudo yum -y update && sudo yum -y install kernel-headers kernel-devel gcc dkms 
 		#SHELL
 
-    machine.vm.provision :ansible do |ansible|
-      ansible.playbook       = "scripts/site.yml"
-    end
+    #machine.vm.provision :ansible do |ansible|
+    #  ansible.playbook       = "scripts/site.yml"
+    #end
 	  
 	  machine.vm.provision "shell", inline: "echo 'Fin Provisioning VM ...'"
 	  
